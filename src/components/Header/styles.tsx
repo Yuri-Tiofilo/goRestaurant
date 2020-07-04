@@ -29,3 +29,31 @@ export const AreaIcon = styled.View``;
 export const Icon = styled(FeatherIcons)`
   padding-right: 10px;
 `;
+
+export const AreaHeader = styled.View`
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const AreaTitle = styled.View`
+  /* width: 100%; */
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Title = styled.Text`
+  font-family: 'Poppins-Regular';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  /* identical to box height */
+
+  text-align: center;
+
+  /* Branco */
+
+  color: #ffffff;
+`;

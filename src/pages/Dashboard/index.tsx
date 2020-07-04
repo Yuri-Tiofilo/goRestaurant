@@ -15,6 +15,17 @@ import {
   CardCarrousel,
   TitleCard,
   ImageCard,
+  AreaTitleFoods,
+  TitleFoods,
+  AreaFoods,
+  CardFoods,
+  ContainerScrollFoods,
+  AreaImage,
+  AreaInfo,
+  Descripition,
+  ImageFoods,
+  Price,
+  Title,
 } from './styles';
 
 interface DataCarrousel {
@@ -23,38 +34,53 @@ interface DataCarrousel {
   image_url: string;
 }
 
+interface DataFoods {
+  id: number;
+  name: string;
+  description: string;
+  thumbnail_url: string;
+  price: number;
+}
+
 const Dashboard: React.FC = () => {
   const navigate = useNavigation();
   const [isFocus, setIsFocus] = useState(false);
-  const [categories, setCategories] = useState<DataCarrousel[] | []>([]);
+  const [categories, setCategories] = useState<DataCarrousel[]>([]);
+  const [foods, setFoods] = useState<DataFoods[]>([]);
 
   async function requestCategories(): Promise<void> {
     const response = await api.get('/categories');
 
-    console.log(response.data);
-
     setCategories(response.data);
-
-    // setCategories();
   }
+
+  async function requestFoods(): Promise<void> {
+    const { data } = await api.get('/foods');
+
+    setFoods(data);
+  }
+
+  console.log(foods);
 
   useEffect(() => {
     requestCategories();
   }, []);
 
-  const [data, setData] = useState([
-    {
-      id: 1,
-      title: 'Teste Yuir',
-      image_url:
-        'https://storage.googleapis.com/golden-wind/bootcamp-gostack/desafio-gorestaurant-mobile/massas.png',
-    },
-  ]);
+  useEffect(() => {
+    requestFoods();
+  }, []);
+
+  function handleMoreDetailsFoods(dataParams: DataFoods): void {
+    navigate.navigate('DetailsFood', {
+      idFood: dataParams.id,
+    });
+  }
 
   return (
     <Container>
       <Header
         nameIcon="log-out"
+        isBrand
         functionOnPress={() => {
           navigate.navigate('Home');
         }}
@@ -72,7 +98,7 @@ const Dashboard: React.FC = () => {
             horizontal
             showsHorizontalScrollIndicator={false}
           >
-            {categories.map((category) => (
+            {categories.map((category: DataCarrousel) => (
               <CardCarrousel
                 onPress={() => {
                   setIsFocus(!isFocus);
@@ -87,6 +113,29 @@ const Dashboard: React.FC = () => {
           </Carrousel>
         </ContainerCategory>
       </ContainerScroll>
+      <AreaTitleFoods>
+        <TitleFoods>Pratos</TitleFoods>
+      </AreaTitleFoods>
+      <AreaFoods>
+        <ContainerScrollFoods showsVerticalScrollIndicator={false}>
+          {foods.map((food) => (
+            <CardFoods
+              onPress={() => {
+                handleMoreDetailsFoods(food);
+              }}
+            >
+              <AreaImage>
+                <ImageFoods source={{ uri: food.thumbnail_url }} />
+              </AreaImage>
+              <AreaInfo>
+                <Title>{food.name}</Title>
+                <Descripition>{food.description}</Descripition>
+                <Price>{food.price}</Price>
+              </AreaInfo>
+            </CardFoods>
+          ))}
+        </ContainerScrollFoods>
+      </AreaFoods>
     </Container>
   );
 };
